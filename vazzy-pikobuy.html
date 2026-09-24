@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🤎%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Vazzy × Pikobuy</title>
+<style id="css">
+  :root {
+    --bg: #E8D5BA;
+    --ink: #3B2A1D;
+    --muted: #6B5745;
+    --glass-bg: linear-gradient(135deg, rgba(255,255,255,.44), rgba(255,255,255,.14));
+    --glass-strong: linear-gradient(135deg, rgba(255,255,255,.62), rgba(255,255,255,.22));
+    --tile-bg: linear-gradient(160deg, rgba(255,255,255,.62), rgba(255,255,255,.18));
+    --field-bg: rgba(255,255,255,.6);
+    --rim-hi: rgba(255,255,255,.85);
+    --rim-lo: rgba(255,255,255,.22);
+    --shadow: rgba(92,58,28,.42);
+    --btn-top: #5B4231;
+    --btn-bottom: #3B2A1D;
+    --btn-ink: #FBF1E1;
+    --seg-active: rgba(255,255,255,.82);
+    --heart: #B5462F;
+    --danger: #A33A26;
+    --focus: #2F5FD0;
+    --blob1: #C89968;
+    --blob2: #E9CFA6;
+    --blob3: #D8A78C;
+    --blob4: #A97A52;
+    --blob-opacity: .85;
+    --backdrop: rgba(59,42,29,.28);
+    --display: "Unbounded", "Trebuchet MS", "Segoe UI", sans-serif;
+    --body: "Figtree", "Segoe UI", system-ui, -apple-system, sans-serif;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1D140E;
+      --ink: #F5E8D5;
+      --muted: #BFA88E;
+      --glass-bg: linear-gradient(135deg, rgba(255,235,210,.14), rgba(255,235,210,.04));
+      --glass-strong: linear-gradient(135deg, rgba(255,235,210,.2), rgba(255,235,210,.07));
+      --tile-bg: linear-gradient(160deg, rgba(255,235,210,.2), rgba(255,235,210,.05));
+      --field-bg: rgba(255,235,210,.1);
+      --rim-hi: rgba(255,240,220,.4);
+      --rim-lo: rgba(255,240,220,.08);
+      --shadow: rgba(0,0,0,.55);
+      --btn-top: #F2DFC2;
+      --btn-bottom: #D9BC96;
+      --btn-ink: #2E1F14;
+      --seg-active: rgba(255,235,210,.22);
+      --heart: #E9836B;
+      --danger: #F0907A;
+      --focus: #8DB2FF;
+      --blob1: #7A5030;
+      --blob2: #5A3E28;
+      --blob3: #6B4632;
+      --blob4: #A06E43;
+      --blob-opacity: .6;
+      --backdrop: rgba(0,0,0,.45);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1D140E;
+    --ink: #F5E8D5;
+    --muted: #BFA88E;
+    --glass-bg: linear-gradient(135deg, rgba(255,235,210,.14), rgba(255,235,210,.04));
+    --glass-strong: linear-gradient(135deg, rgba(255,235,210,.2), rgba(255,235,210,.07));
+    --tile-bg: linear-gradient(160deg, rgba(255,235,210,.2), rgba(255,235,210,.05));
+    --field-bg: rgba(255,235,210,.1);
+    --rim-hi: rgba(255,240,220,.4);
+    --rim-lo: rgba(255,240,220,.08);
+    --shadow: rgba(0,0,0,.55);
+    --btn-top: #F2DFC2;
+    --btn-bottom: #D9BC96;
+    --btn-ink: #2E1F14;
+    --seg-active: rgba(255,235,210,.22);
+    --heart: #E9836B;
+    --danger: #F0907A;
+    --focus: #8DB2FF;
+    --blob1: #7A5030;
+    --blob2: #5A3E28;
+    --blob3: #6B4632;
+    --blob4: #A06E43;
+    --blob-opacity: .6;
+    --backdrop: rgba(0,0,0,.45);
+  }
+
+  *, *::before, *::after { box-sizing: inherit; }
+  [hidden] { display: none !important; }
+  html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 90px); scroll-behavior: smooth; }
+  html.locked { overflow: hidden; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55; -webkit-font-smoothing: antialiased; min-height: 100%; }
+  button, a, input, select, textarea { font: inherit; }
+  button { cursor: pointer; color: inherit; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+  h1, h2, h3, p { margin: 0; }
+
+  /* Hintergrund */
+  .bg { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+  .blob { position: absolute; border-radius: 50%; filter: blur(70px); opacity: var(--blob-opacity); animation: drift 26s ease-in-out infinite alternate; }
+  .b1 { width: 48vmax; height: 48vmax; background: var(--blob1); top: -14%; left: -12%; }
+  .b2 { width: 42vmax; height: 42vmax; background: var(--blob2); top: 18%; right: -14%; animation-duration: 32s; animation-delay: -8s; }
+  .b3 { width: 36vmax; height: 36vmax; background: var(--blob3); bottom: -14%; left: 22%; animation-duration: 29s; animation-delay: -14s; }
+  .b4 { width: 26vmax; height: 26vmax; background: var(--blob4); bottom: 12%; right: 12%; animation-duration: 35s; animation-delay: -3s; }
+  @keyframes drift { from { transform: translate3d(0,0,0) scale(1); } to { transform: translate3d(6vmax,-4vmax,0) scale(1.12); } }
+
+  /* Liquid Glass */
+  .glass {
+    position: relative; isolation: isolate; border-radius: var(--r, 28px);
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(22px) saturate(170%); backdrop-filter: blur(22px) saturate(170%);
+    box-shadow: inset 0 1px 1px var(--rim-hi), inset 0 -1px 1px var(--rim-lo), 0 22px 40px -20px var(--shadow);
+  }
+  dialog.glass { position: fixed; }
+  .glass::before {
+    content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1.5px; pointer-events: none;
+    background: linear-gradient(140deg, rgba(255,255,255,.95), rgba(255,255,255,.04) 34%, rgba(255,255,255,.04) 66%, rgba(255,255,255,.7));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+  }
+  .glass::after {
+    content: ""; position: absolute; inset: 0; border-radius: inherit; z-index: -1; pointer-events: none;
+    background: radial-gradient(circle 240px at var(--mx, 50%) var(--my, 0%), rgba(255,255,255,.42), transparent 62%);
+    opacity: 0; transition: opacity .3s ease;
+  }
+  .glass:hover::after { opacity: 1; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .glass::before { opacity: .45; } }
+  :root[data-theme="dark"] .glass::before { opacity: .45; }
+
+  /* Navigation */
+  .nav {
+    position: sticky; top: calc(env(safe-area-inset-top, 0px) + 10px); z-index: 20;
+    max-width: 1120px; margin: 10px auto 0; width: calc(100% - 24px);
+    --r: 999px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 8px 8px 22px;
+  }
+  .brand { font-family: var(--display); font-weight: 700; font-size: .95rem; letter-spacing: -.02em; text-decoration: none; color: inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .nav-actions { display: flex; align-items: center; gap: 8px; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none;
+    border: 0; border-radius: 999px; padding: 10px 20px; font-weight: 600; font-size: .95rem;
+    background: linear-gradient(180deg, var(--btn-top), var(--btn-bottom)); color: var(--btn-ink);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.4), inset 0 -1px 0 rgba(0,0,0,.2), 0 10px 20px -10px rgba(59,42,29,.7);
+    transition: transform .15s ease;
+  }
+  .btn:active { transform: scale(.97); }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .btn.soft {
+    background: rgba(255,255,255,.4); color: var(--ink);
+    box-shadow: inset 0 1px 1px rgba(255,255,255,.85), inset 0 -1px 1px rgba(255,255,255,.15), 0 6px 14px -8px var(--shadow);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn.soft { background: rgba(255,235,210,.12); } }
+  :root[data-theme="dark"] .btn.soft { background: rgba(255,235,210,.12); }
+  .btn.danger { color: var(--danger); }
+  .fav-count { display: inline-flex; align-items: center; gap: 6px; }
+
+  /* Hero */
+  .hero { max-width: 1120px; margin: 0 auto; padding: 48px 20px 28px; display: grid; grid-template-columns: 1.15fr 1fr; gap: 32px; align-items: center; }
+  .hero h1 { font-family: var(--display); font-weight: 700; font-size: clamp(1.9rem, 4.4vw, 3.1rem); line-height: 1.12; letter-spacing: -.035em; max-width: 15ch; }
+  .hero p.lead { color: var(--muted); font-size: 1.1rem; max-width: 46ch; margin: 18px 0 26px; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .code { --r: 999px; display: inline-flex; align-items: center; gap: 10px; padding: 5px 5px 5px 18px; }
+  .code small { color: var(--muted); font-size: .85rem; }
+  .code strong { font-family: var(--display); font-weight: 500; letter-spacing: .02em; font-size: .95rem; }
+  .code .btn { padding: 7px 14px; font-size: .85rem; }
+
+  .orb-stage { position: relative; width: min(400px, 82vw); aspect-ratio: 1; justify-self: center; }
+  .orb {
+    position: absolute; border-radius: 50%; display: grid; place-items: center;
+    background: radial-gradient(circle at 30% 22%, rgba(255,255,255,.85), rgba(255,255,255,.18) 34%, rgba(255,255,255,.04) 66%), var(--glass-strong);
+    -webkit-backdrop-filter: blur(22px) saturate(170%); backdrop-filter: blur(22px) saturate(170%);
+    box-shadow: inset 0 2px 3px rgba(255,255,255,.9), inset 0 -14px 30px rgba(120,80,40,.22), inset 0 0 0 1px rgba(255,255,255,.3), 0 30px 50px -24px var(--shadow);
+  }
+  .orb.big { inset: 0; }
+  .orb.big svg { width: 66%; }
+  .orb.s1 { width: 34%; aspect-ratio: 1; right: -4%; top: 4%; }
+  .orb.s2 { width: 28%; aspect-ratio: 1; left: -2%; bottom: 8%; }
+  .orb.s1 svg, .orb.s2 svg { width: 62%; }
+  .garment { display: block; filter: drop-shadow(0 10px 12px rgba(59,42,29,.32)); }
+
+  /* Ablauf */
+  .steps { max-width: 1120px; margin: 8px auto 0; width: calc(100% - 40px); --r: 26px; display: grid; grid-template-columns: repeat(3, 1fr); }
+  .step { padding: 20px 24px; display: flex; gap: 14px; align-items: flex-start; }
+  .step + .step { border-left: 1px solid rgba(255,255,255,.55); }
+  .step b { font-family: var(--display); font-weight: 500; font-size: 1.5rem; line-height: 1; }
+  .step span { color: var(--muted); font-size: .95rem; }
+  .step strong { display: block; color: var(--ink); font-size: 1rem; margin-bottom: 2px; }
+
+  /* Shop */
+  .shop { max-width: 1120px; margin: 0 auto; padding: 44px 20px 24px; }
+  .shop-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+  .shop-head h2 { font-family: var(--display); font-weight: 700; font-size: 1.6rem; letter-spacing: -.03em; }
+  .seg { --r: 999px; display: inline-flex; gap: 2px; padding: 5px; max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+  .seg::-webkit-scrollbar { display: none; }
+  .seg button { border: 0; background: transparent; border-radius: 999px; padding: 8px 16px; font-weight: 500; white-space: nowrap; }
+  .seg button[aria-pressed="true"] { background: var(--seg-active); font-weight: 600; box-shadow: inset 0 1px 1px rgba(255,255,255,.9), 0 4px 10px -4px var(--shadow); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+  .card { padding: 10px; display: flex; flex-direction: column; gap: 12px; }
+  .tile-wrap { position: relative; }
+  .tile {
+    display: grid; place-items: center; width: 100%; aspect-ratio: 1 / .88; border: 0; padding: 0; border-radius: 20px; overflow: hidden;
+    background: var(--tile-bg); box-shadow: inset 0 1px 2px rgba(255,255,255,.85), inset 0 -10px 24px rgba(120,80,40,.12);
+  }
+  .tile .garment { width: 62%; transition: transform .25s ease; }
+  .tile:hover .garment { transform: translateY(-3px) scale(1.04); }
+  .tile .photo { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .badge { position: absolute; left: 10px; top: 10px; padding: 2px 11px; border-radius: 999px; font-size: .78rem; font-weight: 700; background: rgba(255,255,255,.75); color: #3B2A1D; box-shadow: inset 0 1px 1px #fff, 0 3px 8px -3px var(--shadow); }
+  .heart { position: absolute; right: 10px; top: 10px; width: 38px; height: 38px; border-radius: 50%; border: 0; display: grid; place-items: center; background: rgba(255,255,255,.75); color: #3B2A1D; box-shadow: inset 0 1px 1px #fff, 0 3px 8px -3px var(--shadow); }
+  .heart svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linejoin: round; }
+  .heart[aria-pressed="true"] { color: #B5462F; }
+  .heart[aria-pressed="true"] svg { fill: currentColor; }
+  .info { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 0 8px; }
+  .info h3 { font-size: 1.08rem; font-weight: 700; line-height: 1.25; }
+  .cat { color: var(--muted); font-size: .9rem; }
+  .price { font-family: var(--display); font-weight: 500; font-size: .95rem; white-space: nowrap; }
+  .actions { display: flex; gap: 8px; padding: 0 4px 4px; }
+  .actions .btn { flex: 1; padding: 10px 12px; }
+  .empty { grid-column: 1 / -1; padding: 32px 4px; color: var(--muted); }
+
+  footer { max-width: 1120px; margin: 24px auto 0; padding: 0 20px 40px; }
+  .foot { --r: 24px; padding: 20px 24px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 24px; color: var(--muted); font-size: .9rem; }
+  .foot a { color: inherit; }
+
+  /* Dialoge */
+  dialog { color: var(--ink); border: 0; padding: 0; }
+  dialog::backdrop { background: var(--backdrop); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+  @keyframes pop { from { transform: scale(.96); opacity: 0; } to { transform: none; opacity: 1; } }
+  dialog.detail { --r: 32px; width: min(840px, calc(100% - 24px)); max-height: calc(100% - 24px); overflow: auto; background: var(--glass-strong); }
+  dialog.detail[open] { animation: pop .22s ease-out; }
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; }
+  .detail-visual { padding: 14px; }
+  .detail-visual .tile { aspect-ratio: auto; height: 100%; min-height: 300px; pointer-events: none; }
+  .detail-visual .tile .garment { width: 70%; }
+  .detail-text { padding: 30px 30px 30px 14px; display: flex; flex-direction: column; gap: 14px; }
+  .detail-text h2 { font-family: var(--display); font-weight: 700; font-size: 1.6rem; letter-spacing: -.03em; line-height: 1.15; }
+  .detail-text .price { font-size: 1.2rem; }
+  .sizes { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .sizes span.l { color: var(--muted); font-size: .9rem; margin-right: 4px; }
+  .sizes span.s { min-width: 40px; text-align: center; padding: 4px 10px; border-radius: 999px; background: rgba(255,255,255,.5); font-weight: 600; font-size: .9rem; box-shadow: inset 0 1px 1px #fff; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .sizes span.s { background: rgba(255,235,210,.12); box-shadow: none; } }
+  :root[data-theme="dark"] .sizes span.s { background: rgba(255,235,210,.12); box-shadow: none; }
+  .detail-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: auto; padding-top: 6px; }
+  .close, .x { width: 40px; height: 40px; border-radius: 50%; border: 0; background: rgba(255,255,255,.75); color: #3B2A1D; font-size: 1.05rem; box-shadow: inset 0 1px 1px #fff, 0 4px 10px -4px var(--shadow); }
+  .close { position: absolute; top: 14px; right: 14px; z-index: 3; }
+
+  /* Gate */
+  .gate { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; padding: 20px; background: var(--backdrop); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); overflow: auto; }
+  .gate-card { --r: 32px; width: min(460px, 100%); padding: 32px 28px 24px; display: flex; flex-direction: column; gap: 14px; background: var(--glass-strong); }
+  .gate-card h2 { font-family: var(--display); font-weight: 700; font-size: 1.5rem; line-height: 1.15; letter-spacing: -.03em; }
+  .gate-card p { color: var(--muted); }
+  .gate-card .code { align-self: flex-start; }
+  .linklike { background: none; border: 0; color: var(--muted); text-decoration: underline; padding: 6px; align-self: center; }
+
+  /* Admin */
+  .admin-fab { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 30; }
+  dialog.admin { --r: 30px; width: min(780px, calc(100% - 24px)); height: min(820px, calc(100% - 24px)); background: var(--glass-strong); overflow: hidden; }
+  dialog.admin[open] { display: flex; flex-direction: column; animation: pop .22s ease-out; }
+  .admin-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 22px 10px; }
+  .admin-head h2 { font-family: var(--display); font-weight: 700; font-size: 1.15rem; letter-spacing: -.02em; }
+  .admin-body { flex: 1; overflow: auto; padding: 6px 22px 16px; }
+  .admin-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 22px calc(16px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid rgba(255,255,255,.55); }
+  .admin-foot span { color: var(--muted); font-size: .9rem; }
+  .tabs { margin: 8px 0 16px; }
+  .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .field > label { font-weight: 600; font-size: .9rem; }
+  .field input:not([type=checkbox]):not([type=color]):not([type=file]), .field select, .field textarea {
+    background: var(--field-bg); border: 1px solid rgba(255,255,255,.7); border-radius: 14px; padding: 10px 12px; color: var(--ink); width: 100%;
+  }
+  .field input[type=color] { width: 64px; height: 42px; border: 1px solid rgba(255,255,255,.7); border-radius: 12px; padding: 3px; background: var(--field-bg); }
+  .field textarea { min-height: 90px; resize: vertical; }
+  .field small { color: var(--muted); }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .check { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .check input { width: 20px; height: 20px; }
+  .plist { list-style: none; margin: 14px 0 0; padding: 0; }
+  .plist li { display: grid; grid-template-columns: 56px 1fr auto; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,.5); }
+  .pthumb { width: 56px; height: 56px; border-radius: 14px; background: var(--tile-bg); display: grid; place-items: center; overflow: hidden; }
+  .pthumb svg { width: 70%; }
+  .pthumb img { width: 100%; height: 100%; object-fit: cover; }
+  .pmeta { display: flex; flex-direction: column; min-width: 0; }
+  .pmeta strong { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pmeta span { color: var(--muted); font-size: .9rem; }
+  .pbtns { display: flex; gap: 6px; }
+  .pbtns .btn { padding: 7px 12px; font-size: .85rem; }
+  .photo-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .form-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+
+  .toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); z-index: 60; --r: 999px; transform: translate(-50%, 16px); opacity: 0; pointer-events: none; padding: 10px 20px; font-weight: 600; transition: opacity .2s, transform .2s; background: var(--glass-strong); color: var(--ink); }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  @media (max-width: 860px) {
+    .hero { grid-template-columns: 1fr; padding-top: 32px; }
+    .orb-stage { width: min(300px, 74vw); order: -1; margin-bottom: 8px; }
+    .steps { grid-template-columns: 1fr; }
+    .step + .step { border-left: 0; border-top: 1px solid rgba(255,255,255,.55); }
+  }
+  @media (max-width: 640px) {
+    .detail-grid { grid-template-columns: 1fr; }
+    .detail-visual .tile { min-height: 220px; }
+    .detail-text { padding: 6px 22px 24px; }
+    .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .card { padding: 8px; }
+    .info { flex-direction: column; gap: 2px; }
+    .actions .btn.soft { display: none; }
+    .brand { font-size: .82rem; }
+    .two { grid-template-columns: 1fr; }
+    .plist li { grid-template-columns: 56px 1fr; }
+    .pbtns { grid-column: 1 / -1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<template id="body-tpl">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <linearGradient id="sheen" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#fff" stop-opacity=".5"/>
+        <stop offset=".55" stop-color="#fff" stop-opacity="0"/>
+        <stop offset="1" stop-color="#000" stop-opacity=".2"/>
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <div class="bg" aria-hidden="true">
+    <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="blob b4"></div>
+  </div>
+
+  <header class="nav glass">
+    <a class="brand" href="#top" id="brand"></a>
+    <div class="nav-actions">
+      <button class="btn soft" id="favNav" type="button" aria-label="Merkliste anzeigen">
+        <span class="fav-count"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 20.5s-8-4.9-8-11A4.6 4.6 0 0 1 12 6.7 4.6 4.6 0 0 1 20 9.5c0 6.1-8 11-8 11z"/></svg><span id="favCount">0</span></span>
+      </button>
+      <a class="btn" id="navBuy" href="#" target="_blank" rel="noopener sponsored">Zu Pikobuy</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div>
+        <h1 id="headline"></h1>
+        <p class="lead" id="lead"></p>
+        <div class="hero-actions">
+          <a class="btn" href="#shop">Drop ansehen</a>
+          <div class="code glass">
+            <small>Mein Code</small><strong id="codeText"></strong>
+            <button class="btn soft" id="copyCode" type="button">Kopieren</button>
+          </div>
+        </div>
+      </div>
+      <div class="orb-stage" aria-hidden="true">
+        <div class="orb big" id="orbBig"></div>
+        <div class="orb s1" id="orbS1"></div>
+        <div class="orb s2" id="orbS2"></div>
+      </div>
+    </section>
+
+    <section class="steps glass" aria-label="So funktioniert es">
+      <div class="step"><b>1</b><span><strong>Registrieren</strong>Melde dich über meinen Link an und hol dir deinen Neukunden-Coupon.</span></div>
+      <div class="step"><b>2</b><span><strong>Teil aussuchen</strong>Tippe ein Produkt an und sieh dir Größen und Details an.</span></div>
+      <div class="step"><b>3</b><span><strong>Bei Pikobuy bestellen</strong>Der Button bringt dich direkt zum Artikel.</span></div>
+    </section>
+
+    <section class="shop" id="shop">
+      <div class="shop-head">
+        <h2>Der Drop</h2>
+        <div class="seg glass" id="seg" role="group" aria-label="Kategorien"></div>
+      </div>
+      <div class="grid" id="grid" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="foot glass">
+      <span id="footName"></span>
+      <span>Werbung · Enthält Affiliate-Links · Preise sind Richtwerte und können bei Pikobuy abweichen.</span>
+      <span><a href="#">Impressum</a> · <a href="#">Datenschutz</a></span>
+    </div>
+  </footer>
+
+  <dialog class="detail glass" id="detail" aria-labelledby="dName">
+    <button class="close" id="detailClose" type="button" aria-label="Schließen">✕</button>
+    <div class="detail-grid">
+      <div class="detail-visual"><div class="tile" id="dTile"></div></div>
+      <div class="detail-text">
+        <span class="cat" id="dCat"></span>
+        <h2 id="dName"></h2>
+        <div class="price" id="dPrice"></div>
+        <p id="dDesc"></p>
+        <div class="sizes" id="dSizes"></div>
+        <div class="detail-actions">
+          <a class="btn" id="dBuy" href="#" target="_blank" rel="noopener sponsored">Bei Pikobuy kaufen</a>
+          <button class="btn soft" id="dFav" type="button" aria-pressed="false">Merken</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="gate" id="gate" hidden>
+    <div class="gate-card glass" role="dialog" aria-labelledby="gateTitle">
+      <h2 id="gateTitle">Erst registrieren, dann stöbern</h2>
+      <p id="gateText"></p>
+      <div class="code glass"><small>Mein Code</small><strong id="gateCode"></strong></div>
+      <a class="btn" id="gateReg" href="#" target="_blank" rel="noopener sponsored">Bei Pikobuy registrieren</a>
+      <button class="btn soft" id="gateGo" type="button" disabled>Ich bin registriert, weiter</button>
+      <button class="linklike" id="gateSkip" type="button">Ich habe schon einen Account</button>
+    </div>
+  </div>
+
+  <button class="btn admin-fab" id="adminFab" type="button" hidden>Bearbeiten</button>
+
+  <dialog class="admin glass" id="admin" aria-labelledby="adminTitle">
+    <div class="admin-head">
+      <h2 id="adminTitle">Shop bearbeiten</h2>
+      <button class="x" id="adminClose" type="button" aria-label="Schließen">✕</button>
+    </div>
+    <div class="admin-body" id="adminBody"></div>
+    <div class="admin-foot">
+      <span id="adminMsg">Alles gespeichert.</span>
+      <button class="btn" id="adminSave" type="button">Speichern und veröffentlichen</button>
+    </div>
+  </dialog>
+
+  <div class="toast glass" id="toast" role="status"></div>
+</template>
+
+<script type="application/json" id="data">
+{
+  "shop": {
+    "name": "Vazzy",
+    "code": "LHPGFU",
+    "registerUrl": "https://m.pikobuy.com/pages/login/register?invitedCode=LHPGFU&inviteUserId=1038157",
+    "headline": "Neue Fits, direkt über Pikobuy.",
+    "lead": "Meine Lieblingsteile aus dem Drop. Aussuchen, Details ansehen und mit einem Klick bei Pikobuy öffnen.",
+    "currency": "EUR",
+    "gate": true
+  },
+  "products": [
+    { "id": 1, "name": "Cloud Hoodie", "category": "Hoodies", "price": 39, "shape": "hoodie", "color": "#F4E8D6", "badge": "Beliebt", "sizes": ["S","M","L","XL"], "link": "", "image": "", "description": "Oversized Hoodie aus schwerem Baumwollfleece. Weiche Innenseite, tiefe Kängurutasche." },
+    { "id": 2, "name": "Zip Hoodie Camel", "category": "Hoodies", "price": 42, "shape": "hoodie", "color": "#C49A6C", "badge": "", "sizes": ["S","M","L","XL"], "link": "", "image": "", "description": "Boxy Zip Hoodie in Camel mit Reißverschluss und Kordelzug." },
+    { "id": 3, "name": "Boxy Tee Cream", "category": "T-Shirts", "price": 19, "shape": "tee", "color": "#F4E8D6", "badge": "", "sizes": ["S","M","L","XL"], "link": "", "image": "", "description": "Kastiger Schnitt, 240 g Baumwolle. Fällt weit aus, nimm deine normale Größe." },
+    { "id": 4, "name": "Boxy Tee Mocha", "category": "T-Shirts", "price": 19, "shape": "tee", "color": "#7A5638", "badge": "Neu", "sizes": ["S","M","L","XL"], "link": "", "image": "", "description": "Das gleiche Tee in Mocha. Weicher Griff, nach dem Waschen kaum Formverlust." },
+    { "id": 5, "name": "Baggy Cargo", "category": "Hosen", "price": 44, "shape": "pants", "color": "#B9AB98", "badge": "", "sizes": ["S","M","L","XL"], "link": "", "image": "", "description": "Weite Cargohose mit Seitentaschen und Gummizug am Saum." },
+    { "id": 6, "name": "Sweatpants Ash", "category": "Hosen", "price": 29, "shape": "pants", "color": "#8C8074", "badge": "", "sizes": ["S","M","L","XL"], "link": "", "image": "", "description": "Gerader Schnitt, dicker Stoff, Kordelzug im Bund." },
+    { "id": 7, "name": "Puffer Jacke", "category": "Jacken", "price": 79, "shape": "jacket", "color": "#2E2621", "badge": "Beliebt", "sizes": ["M","L","XL"], "link": "", "image": "", "description": "Gesteppte Winterjacke mit hohem Kragen und Reißverschluss. Leicht und warm." },
+    { "id": 8, "name": "Coach Jacke", "category": "Jacken", "price": 59, "shape": "jacket", "color": "#7A5638", "badge": "Neu", "sizes": ["S","M","L","XL"], "link": "", "image": "", "description": "Leichte Übergangsjacke mit Druckknöpfen. Wasserabweisend." },
+    { "id": 9, "name": "Washed Cap", "category": "Accessoires", "price": 14, "shape": "cap", "color": "#C49A6C", "badge": "", "sizes": ["One Size"], "link": "", "image": "", "description": "Cap im Washed-Look, verstellbarer Riemen." },
+    { "id": 10, "name": "Canvas Tote", "category": "Accessoires", "price": 12, "shape": "bag", "color": "#F4E8D6", "badge": "", "sizes": ["One Size"], "link": "", "image": "", "description": "Robuste Canvas-Tasche mit langen Henkeln und Platz für den Alltag." }
+  ]
+}
+</script>
+
+<script id="app">
+(function () {
+  "use strict";
+
+  /* ---------- Grundlagen ---------- */
+  var tpl = document.getElementById("body-tpl");
+  document.body.insertBefore(tpl.content.cloneNode(true), tpl);
+
+  var $ = function (id) { return document.getElementById(id); };
+  var data = JSON.parse($("data").textContent);
+  var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
+  var money = function (n) {
+    return new Intl.NumberFormat("de-DE", { style: "currency", currency: data.shop.currency || "EUR", maximumFractionDigits: 2, minimumFractionDigits: 0 }).format(n);
+  };
+  var byId = function (id) { return data.products.filter(function (p) { return p.id === Number(id); })[0]; };
+  var regUrl = function () { return data.shop.registerUrl || "#"; };
+  var linkOf = function (p) { return (p && p.link) || regUrl(); };
+
+  var state = { cat: "Alle" };
+  var favs = [];
+  try { favs = JSON.parse(localStorage.getItem("favs") || "[]") || []; } catch (e) { favs = []; }
+  var current = null;
+  var isAdmin = false;
+  var artifactApi = null;
+  var dirty = false;
+
+  /* ---------- Silhouetten ---------- */
+  var SHAPES = {
+    tee: { d: "M30 14 L16 21 L7 38 L22 44 L28 38 L28 88 L72 88 L72 38 L78 44 L93 38 L84 21 L70 14 C66 23 34 23 30 14 Z",
+      extra: function () { return '<path d="M30 14 C34 23 66 23 70 14" fill="none" stroke="rgba(0,0,0,.28)" stroke-width="1.6"/>'; } },
+    hoodie: { d: "M33 15 C38 5 62 5 67 15 L85 24 L95 72 L81 76 L75 48 L75 90 L25 90 L25 48 L19 76 L5 72 L15 24 Z",
+      extra: function () { return '<g fill="none" stroke="rgba(0,0,0,.28)" stroke-width="1.5" stroke-linejoin="round"><path d="M36 15 C40 33 60 33 64 15"/><path d="M34 70 L66 70 L70 84 L30 84 Z"/><path d="M46 30 L46 44 M54 30 L54 44"/></g>'; } },
+    pants: { d: "M27 8 L73 8 L80 92 L58 92 L50 38 L42 92 L20 92 Z",
+      extra: function () { return '<g fill="none" stroke="rgba(0,0,0,.28)" stroke-width="1.5"><path d="M27 17 L73 17"/><path d="M50 17 L50 38"/><path d="M33 52 L39 52 L38 64 L32 64 Z"/></g>'; } },
+    jacket: { d: "M30 12 L70 12 L88 26 L94 78 L79 80 L75 50 L75 88 L25 88 L25 50 L21 80 L6 78 L12 26 Z",
+      extra: function () { return '<g fill="none" stroke="rgba(0,0,0,.28)" stroke-width="1.5"><path d="M25 36 L75 36 M25 52 L75 52 M25 68 L75 68"/><path d="M50 12 L50 88"/><path d="M36 12 C40 21 60 21 64 12"/></g>'; } },
+    cap: { d: "M12 62 C12 34 32 18 52 19 C74 20 88 38 88 62 Z",
+      extra: function (c) { return '<path d="M46 62 C66 57 92 61 97 71 C82 77 58 73 46 66 Z" fill="' + c + '" stroke="rgba(40,26,16,.35)" stroke-width="1.2" stroke-linejoin="round"/><path d="M46 62 C66 57 92 61 97 71 C82 77 58 73 46 66 Z" fill="url(#sheen)"/><path d="M51 19 C46 34 46 50 48 62" fill="none" stroke="rgba(0,0,0,.28)" stroke-width="1.5"/><circle cx="52" cy="19" r="2.4" fill="rgba(0,0,0,.28)"/>'; } },
+    bag: { d: "M20 38 L80 38 L86 92 L14 92 Z",
+      extra: function () { return '<path d="M36 38 C36 8 64 8 64 38" fill="none" stroke="rgba(0,0,0,.32)" stroke-width="3" stroke-linecap="round"/>'; } }
+  };
+  function garment(shape, color) {
+    var s = SHAPES[shape] || SHAPES.tee;
+    var c = esc(color || "#C49A6C");
+    return '<svg class="garment" viewBox="0 0 100 100" aria-hidden="true"><path d="' + s.d + '" fill="' + c + '" stroke="rgba(40,26,16,.35)" stroke-width="1.2" stroke-linejoin="round"/><path d="' + s.d + '" fill="url(#sheen)"/>' + s.extra(c) + '</svg>';
+  }
+  function visual(p) {
+    return p.image ? '<img class="photo" src="' + esc(p.image) + '" alt="' + esc(p.name) + '">' : garment(p.shape, p.color);
+  }
+
+  /* ---------- Texte ---------- */
+  function applyShop() {
+    var s = data.shop;
+    document.title = s.name + " × Pikobuy";
+    $("brand").textContent = s.name + " × Pikobuy";
+    $("headline").textContent = s.headline;
+    $("lead").textContent = s.lead;
+    $("codeText").textContent = s.code;
+    $("gateCode").textContent = s.code;
+    $("footName").textContent = "© " + new Date().getFullYear() + " " + s.name;
+    $("navBuy").href = regUrl();
+    $("gateReg").href = regUrl();
+    $("gateText").textContent = "Mit meinem Link bekommst du als Neukunde bei Pikobuy einen Coupon (bis zu 40 %). Registriere dich zuerst darüber. Danach kannst du alle Produkte ansehen.";
+  }
+  $("orbBig").innerHTML = garment("hoodie", "#F4E8D6");
+  $("orbS1").innerHTML = garment("cap", "#C49A6C");
+  $("orbS2").innerHTML = garment("tee", "#7A5638");
+
+  /* ---------- Shop-Ansicht ---------- */
+  var HEART = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-8-4.9-8-11A4.6 4.6 0 0 1 12 6.7 4.6 4.6 0 0 1 20 9.5c0 6.1-8 11-8 11z"/></svg>';
+  function categories() {
+    var seen = [];
+    data.products.forEach(function (p) { if (p.category && seen.indexOf(p.category) < 0) seen.push(p.category); });
+    return seen;
+  }
+  function renderSeg() {
+    var cats = ["Alle"].concat(categories(), ["Merkliste"]);
+    if (cats.indexOf(state.cat) < 0) state.cat = "Alle";
+    $("seg").innerHTML = cats.map(function (c) {
+      return '<button type="button" data-cat="' + esc(c) + '" aria-pressed="' + (c === state.cat) + '">' + esc(c) + '</button>';
+    }).join("");
+  }
+  function renderGrid() {
+    var list = data.products;
+    if (state.cat === "Merkliste") list = list.filter(function (p) { return favs.indexOf(p.id) >= 0; });
+    else if (state.cat !== "Alle") list = list.filter(function (p) { return p.category === state.cat; });
+    if (!list.length) {
+      $("grid").innerHTML = '<p class="empty">' + (state.cat === "Merkliste"
+        ? "Noch nichts gemerkt. Tippe bei einem Produkt auf das Herz."
+        : (data.products.length ? "Hier ist gerade nichts. Wähle eine andere Kategorie." : "Noch keine Produkte. Bald gibt es hier neue Teile.")) + "</p>";
+      return;
+    }
+    $("grid").innerHTML = list.map(function (p) {
+      return '<article class="card glass">' +
+        '<div class="tile-wrap">' +
+          '<button class="tile" type="button" data-open="' + p.id + '" aria-label="' + esc(p.name) + ' ansehen">' + visual(p) + '</button>' +
+          (p.badge ? '<span class="badge">' + esc(p.badge) + '</span>' : '') +
+          '<button class="heart" type="button" data-fav="' + p.id + '" aria-pressed="' + (favs.indexOf(p.id) >= 0) + '" aria-label="' + esc(p.name) + ' merken">' + HEART + '</button>' +
+        '</div>' +
+        '<div class="info"><div><h3>' + esc(p.name) + '</h3><span class="cat">' + esc(p.category) + '</span></div><span class="price">ca. ' + money(p.price) + '</span></div>' +
+        '<div class="actions"><button class="btn soft" type="button" data-open="' + p.id + '">Details</button>' +
+        '<a class="btn" href="' + esc(linkOf(p)) + '" target="_blank" rel="noopener sponsored">Bei Pikobuy</a></div>' +
+      '</article>';
+    }).join("");
+  }
+  function renderFavCount() { $("favCount").textContent = favs.length; }
+  function renderAll() { applyShop(); renderSeg(); renderGrid(); renderFavCount(); }
+
+  /* ---------- Detail ---------- */
+  function openDetail(id) {
+    var p = byId(id);
+    if (!p) return;
+    current = p;
+    $("dTile").innerHTML = visual(p);
+    $("dCat").textContent = p.category;
+    $("dName").textContent = p.name;
+    $("dPrice").textContent = "ca. " + money(p.price);
+    $("dDesc").textContent = p.description || "";
+    $("dSizes").innerHTML = (p.sizes && p.sizes.length) ? '<span class="l">Größen</span>' + p.sizes.map(function (s) { return '<span class="s">' + esc(s) + '</span>'; }).join("") : "";
+    $("dBuy").href = linkOf(p);
+    syncDetailFav();
+    $("detail").showModal();
+  }
+  function syncDetailFav() {
+    if (!current) return;
+    var on = favs.indexOf(current.id) >= 0;
+    $("dFav").setAttribute("aria-pressed", on);
+    $("dFav").textContent = on ? "Gemerkt" : "Merken";
+  }
+  var toastTimer;
+  function toast(msg) {
+    var t = $("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.classList.remove("show"); }, 1800);
+  }
+  function toggleFav(id) {
+    id = Number(id);
+    var i = favs.indexOf(id);
+    if (i >= 0) favs.splice(i, 1); else { favs.push(id); toast("Gemerkt"); }
+    try { localStorage.setItem("favs", JSON.stringify(favs)); } catch (e) {}
+    renderFavCount(); renderGrid(); syncDetailFav();
+  }
+
+  /* ---------- Registrierungs-Gate ---------- */
+  function initGate() {
+    var unlocked = false;
+    try { unlocked = localStorage.getItem("unlocked") === "1"; } catch (e) {}
+    var show = !!data.shop.gate && !unlocked && !isAdmin;
+    $("gate").hidden = !show;
+    document.documentElement.classList.toggle("locked", show);
+  }
+  $("gateReg").addEventListener("click", function () {
+    $("gateGo").disabled = false;
+  });
+  function unlock() {
+    try { localStorage.setItem("unlocked", "1"); } catch (e) {}
+    initGate();
+    window.scrollTo(0, 0);
+  }
+  $("gateGo").addEventListener("click", unlock);
+  $("gateSkip").addEventListener("click", unlock);
+
+  /* ---------- Ereignisse ---------- */
+  $("seg").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-cat]");
+    if (!b) return;
+    state.cat = b.dataset.cat; renderSeg(); renderGrid();
+  });
+  $("favNav").addEventListener("click", function () {
+    state.cat = "Merkliste"; renderSeg(); renderGrid();
+    $("shop").scrollIntoView({ behavior: "smooth" });
+  });
+  $("grid").addEventListener("click", function (e) {
+    var f = e.target.closest("[data-fav]");
+    if (f) return toggleFav(f.dataset.fav);
+    var o = e.target.closest("[data-open]");
+    if (o) openDetail(o.dataset.open);
+  });
+  $("dFav").addEventListener("click", function () { if (current) toggleFav(current.id); });
+  $("detailClose").addEventListener("click", function () { $("detail").close(); });
+  ["detail", "admin"].forEach(function (id) {
+    $(id).addEventListener("click", function (e) { if (e.target === $(id)) $(id).close(); });
+  });
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest("a[target=_blank]");
+    if (a && a.getAttribute("href") === "#") { e.preventDefault(); toast("Der Pikobuy-Link fehlt noch"); }
+  });
+  $("copyCode").addEventListener("click", function () {
+    var done = function () { toast("Code kopiert"); };
+    var fail = function () { toast("Dein Code: " + data.shop.code); };
+    try { navigator.clipboard.writeText(data.shop.code).then(done, fail); } catch (e) { fail(); }
+  });
+  document.addEventListener("pointermove", function (e) {
+    var g = e.target.closest && e.target.closest(".glass");
+    if (!g) return;
+    var r = g.getBoundingClientRect();
+    g.style.setProperty("--mx", (e.clientX - r.left) + "px");
+    g.style.setProperty("--my", (e.clientY - r.top) + "px");
+  });
+
+  /* =========================================================
+     ADMIN-MODUS (nur für den Besitzer der Seite sichtbar)
+     ========================================================= */
+  var admin = { tab: "products", editing: null, isNew: false, delArm: null };
+  var SHAPE_NAMES = { hoodie: "Hoodie", tee: "T-Shirt", pants: "Hose", jacket: "Jacke", cap: "Cap", bag: "Tasche" };
+
+  function setMsg(t) { $("adminMsg").textContent = t; }
+  function markDirty() { dirty = true; setMsg("Nicht veröffentlichte Änderungen."); }
+
+  function renderAdmin() {
+    var b = $("adminBody");
+    if (admin.editing) { b.innerHTML = productForm(); return; }
+    var tabs = '<div class="seg glass tabs" role="group" aria-label="Bereich">' +
+      '<button type="button" data-tab="products" aria-pressed="' + (admin.tab === "products") + '">Produkte</button>' +
+      '<button type="button" data-tab="settings" aria-pressed="' + (admin.tab === "settings") + '">Einstellungen</button></div>';
+    if (admin.tab === "products") {
+      b.innerHTML = tabs + '<button class="btn" type="button" data-a="new">Neues Produkt</button>' +
+        (data.products.length ? '<ul class="plist">' + data.products.map(function (p) {
+          var armed = admin.delArm === p.id;
+          return '<li><div class="pthumb">' + visual(p) + '</div>' +
+            '<div class="pmeta"><strong>' + esc(p.name) + '</strong><span>' + esc(p.category) + ' · ' + money(p.price) + '</span></div>' +
+            '<div class="pbtns"><button class="btn soft" type="button" data-a="edit" data-id="' + p.id + '">Bearbeiten</button>' +
+            '<button class="btn soft danger" type="button" data-a="del" data-id="' + p.id + '">' + (armed ? "Wirklich löschen?" : "Löschen") + '</button></div></li>';
+        }).join("") + '</ul>' : '<p style="margin-top:16px;color:var(--muted)">Noch keine Produkte. Lege dein erstes Produkt an.</p>');
+    } else {
+      var s = data.shop;
+      b.innerHTML = tabs +
+        field("Name / Kanalname", '<input type="text" data-k="name" value="' + esc(s.name) + '">') +
+        '<div class="two">' +
+          field("Dein Code", '<input type="text" data-k="code" value="' + esc(s.code) + '">') +
+          field("Währung", '<select data-k="currency"><option value="EUR"' + (s.currency === "EUR" ? " selected" : "") + '>Euro (€)</option><option value="USD"' + (s.currency === "USD" ? " selected" : "") + '>US-Dollar ($)</option></select>') +
+        '</div>' +
+        field("Dein Registrierungs-Link", '<input type="url" data-k="registerUrl" value="' + esc(s.registerUrl) + '"><small>Dieser Link öffnet sich beim Registrieren und als Fallback, wenn ein Produkt keinen eigenen Link hat.</small>') +
+        field("Überschrift", '<input type="text" data-k="headline" value="' + esc(s.headline) + '">') +
+        field("Untertext", '<textarea data-k="lead">' + esc(s.lead) + '</textarea>') +
+        '<label class="check"><input type="checkbox" data-k="gate"' + (s.gate ? " checked" : "") + '> Besucher müssen sich zuerst über meinen Link registrieren</label>';
+    }
+  }
+  function field(label, inner) { return '<div class="field"><label>' + label + '</label>' + inner + '</div>'; }
+
+  function productForm() {
+    var p = admin.editing;
+    var cats = categories();
+    return '<h3 style="font-family:var(--display);font-size:1.05rem;margin:8px 0 16px">' + (admin.isNew ? "Neues Produkt" : "Produkt bearbeiten") + '</h3>' +
+      field("Name", '<input type="text" data-f="name" value="' + esc(p.name) + '" placeholder="z. B. Cloud Hoodie">') +
+      '<div class="two">' +
+        field("Kategorie", '<input type="text" data-f="category" list="catlist" value="' + esc(p.category) + '" placeholder="z. B. Hoodies"><datalist id="catlist">' + cats.map(function (c) { return '<option value="' + esc(c) + '">'; }).join("") + '</datalist>') +
+        field("Preis", '<input type="number" data-f="price" min="0" step="0.5" value="' + esc(p.price) + '">') +
+      '</div>' +
+      field("Pikobuy-Link zu diesem Artikel", '<input type="url" data-f="link" value="' + esc(p.link) + '" placeholder="https://…"><small>Hier klicken Besucher hin. Leer lassen = dein Registrierungs-Link.</small>') +
+      field("Größen (mit Komma trennen)", '<input type="text" data-f="sizes" value="' + esc((p.sizes || []).join(", ")) + '" placeholder="S, M, L, XL">') +
+      field("Beschreibung", '<textarea data-f="description">' + esc(p.description) + '</textarea>') +
+      '<div class="field"><label>Foto</label><div class="photo-row"><div class="pthumb">' + visual(p) + '</div>' +
+        '<input type="file" accept="image/*" data-f="photo">' +
+        (p.image ? '<button class="btn soft" type="button" data-a="rmphoto">Foto entfernen</button>' : '') + '</div>' +
+        '<small>Ohne Foto zeigt die Seite eine gezeichnete Silhouette.</small></div>' +
+      '<div class="two">' +
+        field("Silhouette (ohne Foto)", '<select data-f="shape">' + Object.keys(SHAPE_NAMES).map(function (k) { return '<option value="' + k + '"' + (p.shape === k ? " selected" : "") + '>' + SHAPE_NAMES[k] + '</option>'; }).join("") + '</select>') +
+        field("Farbe (ohne Foto)", '<input type="color" data-f="color" value="' + esc(p.color || "#C49A6C") + '">') +
+      '</div>' +
+      field("Label (optional)", '<input type="text" data-f="badge" value="' + esc(p.badge) + '" placeholder="Neu, Beliebt …">') +
+      '<div class="form-actions"><button class="btn" type="button" data-a="apply">Übernehmen</button><button class="btn soft" type="button" data-a="cancel">Abbrechen</button></div>';
+  }
+
+  function fileToDataUrl(file) {
+    return new Promise(function (resolve, reject) {
+      var fr = new FileReader();
+      fr.onerror = reject;
+      fr.onload = function () {
+        var img = new Image();
+        img.onerror = reject;
+        img.onload = function () {
+          var max = 640, s = Math.min(1, max / Math.max(img.width, img.height));
+          var c = document.createElement("canvas");
+          c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+          c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+          resolve(c.toDataURL("image/jpeg", 0.8));
+        };
+        img.src = fr.result;
+      };
+      fr.readAsDataURL(file);
+    });
+  }
+
+  /* Admin: Klicks */
+  $("adminBody").addEventListener("click", function (e) {
+    var t = e.target.closest("[data-tab]");
+    if (t) { admin.tab = t.dataset.tab; admin.delArm = null; renderAdmin(); return; }
+    var a = e.target.closest("[data-a]");
+    if (!a) return;
+    var act = a.dataset.a, id = Number(a.dataset.id);
+    if (act === "new") {
+      admin.editing = { id: null, name: "", category: "", price: 0, shape: "tee", color: "#C49A6C", badge: "", sizes: [], link: "", image: "", description: "" };
+      admin.isNew = true; renderAdmin();
+    } else if (act === "edit") {
+      var p = byId(id);
+      admin.editing = JSON.parse(JSON.stringify(p)); admin.isNew = false; renderAdmin();
+    } else if (act === "del") {
+      if (admin.delArm === id) {
+        data.products = data.products.filter(function (x) { return x.id !== id; });
+        admin.delArm = null; markDirty(); renderAll(); renderAdmin();
+      } else { admin.delArm = id; renderAdmin(); }
+    } else if (act === "rmphoto") {
+      admin.editing.image = ""; renderAdmin();
+    } else if (act === "cancel") {
+      admin.editing = null; renderAdmin();
+    } else if (act === "apply") {
+      var d = admin.editing;
+      if (!d.name.trim()) { setMsg("Bitte gib einen Namen ein."); return; }
+      d.name = d.name.trim(); d.category = (d.category || "Sonstiges").trim() || "Sonstiges";
+      d.price = Math.max(0, Number(d.price) || 0);
+      if (admin.isNew) {
+        d.id = data.products.reduce(function (m, x) { return Math.max(m, x.id); }, 0) + 1;
+        data.products.unshift(d);
+      } else {
+        data.products = data.products.map(function (x) { return x.id === d.id ? d : x; });
+      }
+      admin.editing = null; markDirty(); renderAll(); renderAdmin();
+    }
+  });
+
+  /* Admin: Eingaben */
+  $("adminBody").addEventListener("input", function (e) {
+    var el = e.target;
+    if (el.dataset.k) {
+      var v = el.type === "checkbox" ? el.checked : el.value;
+      data.shop[el.dataset.k] = v;
+      markDirty(); applyShop(); renderGrid();
+      if (el.dataset.k === "gate") initGate();
+    } else if (el.dataset.f && admin.editing && el.dataset.f !== "photo") {
+      var f = el.dataset.f;
+      if (f === "sizes") admin.editing.sizes = el.value.split(",").map(function (s) { return s.trim(); }).filter(Boolean);
+      else if (f === "price") admin.editing.price = el.value;
+      else admin.editing[f] = el.value;
+    }
+  });
+  $("adminBody").addEventListener("change", function (e) {
+    var el = e.target;
+    if (el.dataset.k === "currency" || el.dataset.k === "gate") { renderAll(); renderAdmin(); }
+    if (el.dataset.f === "photo" && el.files && el.files[0]) {
+      setMsg("Foto wird verkleinert …");
+      fileToDataUrl(el.files[0]).then(function (url) {
+        admin.editing.image = url; setMsg(dirty ? "Nicht veröffentlichte Änderungen." : "Alles gespeichert."); renderAdmin();
+      }, function () { setMsg("Das Foto konnte nicht gelesen werden."); });
+    }
+    if (el.dataset.f === "shape" || el.dataset.f === "color") renderAdmin();
+  });
+
+  $("adminFab").addEventListener("click", function () { admin.editing = null; renderAdmin(); $("admin").showModal(); });
+  $("adminClose").addEventListener("click", function () { $("admin").close(); });
+
+  /* Speichern: erzeugt die komplette Seite neu und veröffentlicht sie */
+  var HEAD = '<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">' +
+    '<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ctext y=\'.9em\' font-size=\'90\'%3E🤎%3C/text%3E%3C/svg%3E">' +
+    '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' +
+    '<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">';
+
+  function buildHtml() {
+    var css = $("css").textContent;
+    var app = $("app").textContent;
+    if (app.indexOf("function buildHtml") < 0 || !css) throw new Error("source");
+    var json = JSON.stringify(data, null, 1).replace(/</g, "\\u003c");
+    return "<!DOCTYPE html>\n<html lang=\"de\"><head>" + HEAD + "<title>" + esc(data.shop.name) + " × Pikobuy</title>" +
+      "<style id=\"css\">" + css + "</style></head><body>" +
+      "<template id=\"body-tpl\">" + tpl.innerHTML + "</template>\n" +
+      "<script type=\"application/json\" id=\"data\">\n" + json + "\n<\/script>\n" +
+      "<script id=\"app\">" + app + "<\/script>\n</body></html>";
+  }
+
+  $("adminSave").addEventListener("click", function () {
+    if (!artifactApi) { setMsg("Speichern geht hier nicht. Öffne die Seite in Claude."); return; }
+    var html;
+    try { html = buildHtml(); } catch (err) { setMsg("Die Seite konnte nicht zusammengebaut werden."); return; }
+    $("adminSave").disabled = true;
+    setMsg("Wird veröffentlicht …");
+    artifactApi.publish(html).then(function () {
+      dirty = false; setMsg("Veröffentlicht. Die Seite lädt neu …");
+    }, function (err) {
+      $("adminSave").disabled = false;
+      var c = err && err.code;
+      if (c === "conflict") setMsg("Es gab eine neuere Version. Die Seite lädt neu.");
+      else if (c === "not_writer" || c === "not_granted" || c === "consent_required") setMsg("Nur der Besitzer kann speichern.");
+      else if (c === "too_large") setMsg("Die Seite ist zu groß. Nimm weniger oder kleinere Fotos.");
+      else if (c === "rate_limited") setMsg("Zu schnell. Warte kurz und versuche es nochmal.");
+      else setMsg("Speichern hat nicht geklappt. Versuche es nochmal.");
+    });
+  });
+
+  /* Admin-Erkennung (leise im Hintergrund) */
+  try {
+    if (window.claude && window.claude.use) {
+      Promise.all([window.claude.use("user"), window.claude.use("artifact")]).then(function (r) {
+        var user = r[0], art = r[1];
+        if (!user || !art) return;
+        return user.canEdit().then(function (ok) {
+          if (!ok) return;
+          isAdmin = true; artifactApi = art;
+          $("adminFab").hidden = false;
+          initGate();
+        });
+      }).catch(function () {});
+    }
+  } catch (e) {}
+
+  window.addEventListener("beforeunload", function (e) { if (dirty && isAdmin) { e.preventDefault(); e.returnValue = ""; } });
+
+  renderAll();
+  initGate();
+})();
+<\/script>
+</body>
+</html>
